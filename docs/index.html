@@ -3,35 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capstone Project - Version 2</title>
+    <title>Version 2 - 5-Year OpEx/CapEx + ROI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+      :root {
+        --bg: #0f172a;
+        --card: #111827;
+        --muted: #9ca3af;
+        --text: #f3f4f6;
+        --line: #2f3f57;
+        --accent: #60a5fa;
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
+        background: var(--bg);
+        color: var(--text);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-        background: #0f172a;
-        color: #e2e8f0;
       }
       .wrap {
-        max-width: 900px;
-        margin: 3rem auto;
-        padding: 1.25rem;
+        width: min(1200px, 94%);
+        margin: 24px auto;
       }
       .card {
-        background: #111827;
-        border: 1px solid #334155;
+        background: var(--card);
+        border: 1px solid var(--line);
         border-radius: 12px;
-        padding: 1.25rem;
+        padding: 16px;
+        margin-bottom: 14px;
       }
-      h1 {
-        margin-top: 0;
+      h1,
+      h2 {
+        margin: 0 0 10px;
       }
-      a {
-        color: #60a5fa;
+      p {
+        margin: 8px 0;
+        color: var(--muted);
       }
-      code {
-        background: #1f2937;
-        padding: 0.1rem 0.35rem;
-        border-radius: 4px;
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: #0b1220;
+        color: var(--text);
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 8px;
+        text-align: right;
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+      }
+      .kpi {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+      }
+      .kpi strong {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 4px;
       }
     </style>
   </head>
@@ -39,25 +107,199 @@
     <main class="wrap">
       <section class="card">
         <h1>Version 2: 5-Year OpEx/CapEx + ROI</h1>
-        <p>
-          This branch contains a <strong>Streamlit app</strong> located in
-          <code>Version 2/app.py</code>.
-        </p>
-        <p>
-          GitHub Pages hosts static sites, so it cannot run the Streamlit
-          server directly. Use one of the options below:
-        </p>
-        <ul>
-          <li>Run locally: <code>python -m streamlit run "Version 2/app.py"</code></li>
-          <li>Open the repository and run it in Codespaces</li>
-        </ul>
-        <p>
-          Repository:
-          <a href="https://github.com/ghazanfarali23/Capstone-Project" target="_blank" rel="noreferrer">
-            ghazanfarali23/Capstone-Project
-          </a>
-        </p>
+        <p>Static web version for GitHub Pages (Panel-2 branch).</p>
+      </section>
+
+      <section class="card">
+        <h2>Inputs</h2>
+        <div class="grid">
+          <div>
+            <label for="opex">Year 1 OpEx ($)</label>
+            <input id="opex" type="number" value="18000" min="0" />
+          </div>
+          <div>
+            <label for="capex">Year 1 CapEx ($)</label>
+            <input id="capex" type="number" value="5000" min="0" />
+          </div>
+          <div>
+            <label for="annual">Annual cost change (%)</label>
+            <input id="annual" type="number" value="5" step="0.1" />
+          </div>
+          <div>
+            <label for="tangible">Year 1 Tangible Return ($)</label>
+            <input id="tangible" type="number" value="25000" min="0" />
+          </div>
+          <div>
+            <label for="tangibleGrowth">Tangible growth (%)</label>
+            <input id="tangibleGrowth" type="number" value="0" step="0.1" />
+          </div>
+          <div>
+            <label for="tangibleReal">Tangible realization (%)</label>
+            <input id="tangibleReal" type="number" value="80" min="0" max="100" />
+          </div>
+          <div>
+            <label for="intangible">Year 1 Intangible Return ($)</label>
+            <input id="intangible" type="number" value="10000" min="0" />
+          </div>
+          <div>
+            <label for="intangibleGrowth">Intangible growth (%)</label>
+            <input id="intangibleGrowth" type="number" value="2" step="0.1" />
+          </div>
+          <div>
+            <label for="intangibleReal">Intangible realization (%)</label>
+            <input id="intangibleReal" type="number" value="50" min="0" max="100" />
+          </div>
+          <div>
+            <label for="discount">Discount rate for NPV (%)</label>
+            <input id="discount" type="number" value="10" step="0.1" />
+          </div>
+        </div>
+        <button id="runBtn">Calculate</button>
+      </section>
+
+      <section class="card">
+        <h2>5-Year Summary</h2>
+        <div class="kpis" id="kpis"></div>
+      </section>
+
+      <section class="card">
+        <h2>Cash Flow Table (Years 1-5)</h2>
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>OpEx ($)</th>
+              <th>CapEx ($)</th>
+              <th>Total Cost ($)</th>
+              <th>Tangible Return ($)</th>
+              <th>Intangible Return ($)</th>
+              <th>Total Return ($)</th>
+              <th>ROI %</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Costs Chart</h2>
+        <canvas id="costChart"></canvas>
+      </section>
+
+      <section class="card">
+        <h2>ROI % by Year</h2>
+        <canvas id="roiChart"></canvas>
       </section>
     </main>
+
+    <script>
+      const years = [1, 2, 3, 4, 5];
+      let costChart;
+      let roiChart;
+
+      function f(v) {
+        return Number(v || 0);
+      }
+      function money(v) {
+        return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(v);
+      }
+      function pct(v) {
+        return `${v.toFixed(1)}%`;
+      }
+
+      function calculate() {
+        const opex1 = f(document.getElementById("opex").value);
+        const capex1 = f(document.getElementById("capex").value);
+        const annual = f(document.getElementById("annual").value) / 100;
+        const tangible1 = f(document.getElementById("tangible").value);
+        const tGrowth = f(document.getElementById("tangibleGrowth").value) / 100;
+        const tReal = f(document.getElementById("tangibleReal").value) / 100;
+        const intangible1 = f(document.getElementById("intangible").value);
+        const iGrowth = f(document.getElementById("intangibleGrowth").value) / 100;
+        const iReal = f(document.getElementById("intangibleReal").value) / 100;
+        const discount = f(document.getElementById("discount").value) / 100;
+
+        const rows = [];
+        let totCost = 0;
+        let totReturn = 0;
+        let npv = 0;
+        for (const y of years) {
+          const k = y - 1;
+          const factor = Math.pow(1 + annual, k);
+          const opex = opex1 * factor;
+          const capex = capex1 * factor;
+          const totalCost = opex + capex;
+          const tangible = tangible1 * Math.pow(1 + tGrowth, k) * tReal;
+          const intangible = intangible1 * Math.pow(1 + iGrowth, k) * iReal;
+          const totalReturn = tangible + intangible;
+          const roi = totalCost > 0 ? ((totalReturn - totalCost) / totalCost) * 100 : 0;
+          const net = totalReturn - totalCost;
+          const disc = Math.pow(1 + discount, y);
+          npv += net / disc;
+          totCost += totalCost;
+          totReturn += totalReturn;
+          rows.push({ y, opex, capex, totalCost, tangible, intangible, totalReturn, roi });
+        }
+
+        const totalNet = totReturn - totCost;
+        const overallRoi = totCost > 0 ? (totalNet / totCost) * 100 : 0;
+        render(rows, { totCost, totReturn, totalNet, overallRoi, npv });
+      }
+
+      function render(rows, sums) {
+        const tbody = document.querySelector("#resultsTable tbody");
+        tbody.innerHTML = rows
+          .map(
+            (r) => `
+          <tr>
+            <td>Year ${r.y}</td>
+            <td>${money(r.opex)}</td>
+            <td>${money(r.capex)}</td>
+            <td>${money(r.totalCost)}</td>
+            <td>${money(r.tangible)}</td>
+            <td>${money(r.intangible)}</td>
+            <td>${money(r.totalReturn)}</td>
+            <td>${pct(r.roi)}</td>
+          </tr>`
+          )
+          .join("");
+
+        document.getElementById("kpis").innerHTML = `
+          <div class="kpi"><strong>5-Year Total Cost</strong>${money(sums.totCost)}</div>
+          <div class="kpi"><strong>5-Year Total Return</strong>${money(sums.totReturn)}</div>
+          <div class="kpi"><strong>5-Year Net (Return - Cost)</strong>${money(sums.totalNet)}</div>
+          <div class="kpi"><strong>Overall ROI</strong>${pct(sums.overallRoi)}</div>
+          <div class="kpi"><strong>NPV</strong>${money(sums.npv)}</div>
+        `;
+
+        if (costChart) costChart.destroy();
+        if (roiChart) roiChart.destroy();
+
+        costChart = new Chart(document.getElementById("costChart"), {
+          type: "bar",
+          data: {
+            labels: rows.map((r) => `Year ${r.y}`),
+            datasets: [
+              { label: "OpEx", data: rows.map((r) => r.opex), backgroundColor: "#38bdf8" },
+              { label: "CapEx", data: rows.map((r) => r.capex), backgroundColor: "#60a5fa" },
+              { label: "Total Cost", data: rows.map((r) => r.totalCost), backgroundColor: "#2563eb" }
+            ]
+          },
+          options: { responsive: true, plugins: { legend: { labels: { color: "#f3f4f6" } } }, scales: { x: { ticks: { color: "#f3f4f6" } }, y: { ticks: { color: "#f3f4f6" } } } }
+        });
+
+        roiChart = new Chart(document.getElementById("roiChart"), {
+          type: "bar",
+          data: {
+            labels: rows.map((r) => `Year ${r.y}`),
+            datasets: [{ label: "ROI %", data: rows.map((r) => r.roi), backgroundColor: "#34d399" }]
+          },
+          options: { responsive: true, plugins: { legend: { labels: { color: "#f3f4f6" } } }, scales: { x: { ticks: { color: "#f3f4f6" } }, y: { ticks: { color: "#f3f4f6" } } } }
+        });
+      }
+
+      document.getElementById("runBtn").addEventListener("click", calculate);
+      calculate();
+    </script>
   </body>
 </html>
